@@ -20,9 +20,22 @@ const cartReducer = createSlice({
   reducers: {
     addToCartAction: (state, action) => {
       const product = action.payload;
-      const newProduct = { ...product, quantityCart: 1 };
-      state.cart.push(newProduct);
-      localStorage.setItem("arrProduct", JSON.stringify(state.cart));
+      const indexProduct = state.cart.findIndex(
+        (item) => item.id === product.id
+      );
+      if (indexProduct === -1) {
+        const newProduct = { ...product, quantityCart: 1 };
+        state.cart.push(newProduct);
+        localStorage.setItem("arrProduct", JSON.stringify(state.cart));
+      } else {
+        const newProduct = {
+          ...product,
+          quantityCart: (state.cart[indexProduct].quantityCart += 1),
+        };
+        state.cart[indexProduct] = newProduct;
+
+        localStorage.setItem("arrProduct", JSON.stringify(state.cart));
+      }
     },
     deleteCart: (state, action) => {
       state.cart = [];
